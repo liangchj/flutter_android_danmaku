@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_android_danmaku/danmaku_options.dart';
 
-typedef OnViewCreated = Function(CustomViewController);
+typedef OnViewCreated = Function(DanmakuViewController);
 
 class FlutterAndroidDanmakuView extends StatefulWidget {
   const FlutterAndroidDanmakuView({super.key, required this.onViewCreated, this.danmakuOptions});
@@ -36,18 +36,18 @@ class _FlutterAndroidDanmakuViewState extends State<FlutterAndroidDanmakuView> {
   }
   void _onPlatformViewCreated(int id) {
     _channel = const MethodChannel('FLUTTER_ANDROID_DANMAKU_METHOD_CHANNEL');
-    final controller = CustomViewController._(
+    final controller = DanmakuViewController._(
       _channel,
     );
     widget.onViewCreated(controller);
   }
 }
 
-class CustomViewController {
+class DanmakuViewController {
   final MethodChannel _channel;
   final StreamController<dynamic> _controller = StreamController<dynamic>();
 
-  CustomViewController._(
+  DanmakuViewController._(
       this._channel,
       ) {
     _channel.setMethodCallHandler(
@@ -213,6 +213,19 @@ class CustomViewController {
   Future<ResultInfo> setAllowOverlap(bool flag) async {
     var result = await _channel.invokeMethod('setAllowOverlap', {'flag': flag});
     return _handleResult("setAllowOverlap", result);
+  }
+
+  // 设置最大显示行数
+  // 设置null取消行数限制
+  Future<ResultInfo> setMaximumLines({int? lines}) async {
+    var result = await _channel.invokeMethod('setMaximumLines', {'lines': lines});
+    return _handleResult("setMaximumLines", result);
+  }
+
+  // 设置同屏弹幕密度 -1自动 0无限制  n 同屏最大显示n个弹幕
+  Future<ResultInfo> setMaximumVisibleSizeInScreen(int maxSize) async {
+    var result = await _channel.invokeMethod('setMaximumVisibleSizeInScreen', {'maxSize': maxSize});
+    return _handleResult("setMaximumVisibleSizeInScreen", result);
   }
 }
 

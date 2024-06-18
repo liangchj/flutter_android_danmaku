@@ -10,7 +10,7 @@ class DanmakuFlameMasterPage extends StatefulWidget {
 }
 
 class _DanmakuFlameMasterPageState extends State<DanmakuFlameMasterPage> {
-  late CustomViewController controller;
+  late DanmakuViewController controller;
   @override
   Widget build(BuildContext context) {
     debugPrint("页面重绘或构建");

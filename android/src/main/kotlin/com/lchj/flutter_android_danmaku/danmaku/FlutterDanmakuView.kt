@@ -364,6 +364,29 @@ class FlutterDanmakuView(
                     result.success(mapOf("method" to "setAllowOverlap", "flag" to false, "msg" to "设置是否允许重叠失败：$e"))
                 }
             }
+            "setMaximumLines" -> { // 设置最大显示行数，设置null取消行数限制
+                try {
+                    val lines: Int? = call.argument<Int>("lines")
+                    FlutterDanmakuViewUtils.setMaximumLines(lines)
+                } catch (e: Exception) {
+                    Log.e(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "setMaximumLines error: $e")
+                    result.success(mapOf("method" to "setMaximumLines", "flag" to false, "msg" to "设置最大显示行数失败：$e"))
+                }
+            }
+            "setMaximumVisibleSizeInScreen" -> { // 设置同屏弹幕密度 -1自动 0无限制  n 同屏最大显示n个弹幕
+                try {
+                    val maxSize: Int? = call.argument<Int>("maxSize")
+                    if (maxSize == null) {
+                        result.success(mapOf("method" to "setMaximumVisibleSizeInScreen", "flag" to false, "msg" to "设置同屏弹幕密度失败：无法获取设置同屏弹幕密度值"))
+                    } else {
+                        FlutterDanmakuViewUtils.setMaximumVisibleSizeInScreen(maxSize)
+                        result.success(mapOf("method" to "setMaximumVisibleSizeInScreen", "flag" to true, "msg" to ""))
+                    }
+                } catch (e: Exception) {
+                    Log.e(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "setMaximumVisibleSizeInScreen error: $e")
+                    result.success(mapOf("method" to "setMaximumVisibleSizeInScreen", "flag" to false, "msg" to "设置同屏弹幕密度失败：$e"))
+                }
+            }
             else -> {
                 result.notImplemented()
             }

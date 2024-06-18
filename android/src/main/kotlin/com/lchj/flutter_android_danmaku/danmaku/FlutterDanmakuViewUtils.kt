@@ -291,4 +291,29 @@ object FlutterDanmakuViewUtils {
             Log.e(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "setAllowOverlap 失败：$e")
         }
     }
+
+    /**
+     * 设置最大显示行数
+     * 设置null取消行数限制
+     */
+    fun setMaximumLines(lines: Int?) {
+        try {
+            danmakuView?.setMaximumLines(lines)
+        } catch (e: Exception) {
+            Log.e(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "setMaximumLines 失败：$e")
+        }
+    }
+
+    /**
+     * 设置同屏弹幕密度 -1自动 0无限制  n 同屏最大显示n个弹幕
+     *
+     * @param maxSize
+     */
+    fun setMaximumVisibleSizeInScreen(maxSize: Int) {
+        try {
+            danmakuView?.setMaximumVisibleSizeInScreen(maxSize)
+        } catch (e: Exception) {
+            Log.e(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "setMaximumVisibleSizeInScreen 失败：$e")
+        }
+    }
 }

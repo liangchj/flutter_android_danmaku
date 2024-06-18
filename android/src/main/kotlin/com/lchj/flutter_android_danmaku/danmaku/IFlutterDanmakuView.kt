@@ -1,6 +1,7 @@
 package com.lchj.flutter_android_danmaku.danmaku
 
 import android.view.View
+import master.flame.danmaku.danmaku.model.android.DanmakuContext
 
 // 弹幕view默认有获取和销毁方法
 interface IFlutterDanmakuView {
@@ -121,4 +122,17 @@ interface IFlutterDanmakuView {
      * 设置是否允许重叠
      */
     fun setAllowOverlap(flag: Boolean)
+
+    /**
+     * 设置最大显示行数
+     * 设置null取消行数限制
+     */
+    fun setMaximumLines(lines: Int?)
+
+    /**
+     * 设置同屏弹幕密度 -1自动 0无限制  n 同屏最大显示n个弹幕
+     *
+     * @param maxSize
+     */
+    fun setMaximumVisibleSizeInScreen(maxSize: Int)
 }

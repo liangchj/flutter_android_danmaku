@@ -34,6 +34,10 @@ class DanmakuOptions {
   final double? danmakuFontSizeRatio;
   // 弹幕速度
   final double? danmakuSpeed;
+  // 同屏弹幕数量 -1 按绘制效率自动调整 0 无限制 n 同屏最大显示n个弹幕
+  final int? maxNumInScreen;
+  // 最大显示行数
+  final int? maxLinesLimit;
 
   DanmakuOptions({
     this.danmakuPath,
@@ -53,6 +57,7 @@ class DanmakuOptions {
     this.danmakuDisplayArea,
     this.danmakuFontSizeRatio,
     this.danmakuSpeed,
+    this.maxNumInScreen, this.maxLinesLimit,
   });
 
   Map<String, dynamic> toJson() => {
@@ -73,6 +78,8 @@ class DanmakuOptions {
     "danmakuDisplayArea": danmakuDisplayArea,
     "danmakuFontSizeRatio": danmakuFontSizeRatio,
     "danmakuSpeed": danmakuSpeed,
+    "maxNumInScreen": maxNumInScreen,
+    "maxLinesLimit": maxLinesLimit,
 
   };
 }

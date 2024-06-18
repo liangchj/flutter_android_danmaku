@@ -81,6 +81,11 @@ class FlutterDanmakuFlameMasterView(
     // 是否显示彩色弹幕
     private var colorsDanmakuVisibility: Boolean = true
 
+    // 同屏弹幕数量 -1 按绘制效率自动调整 0 无限制 n 同屏最大显示n个弹幕
+    private var maxNumInScreen: Int = -1
+    // 最大显示行数
+    private var maxLinesLimit: Int? = null
+
 
     init {
         isStart = MapUtils.getBoolean(args, "isStart", isStart)
@@ -92,6 +97,9 @@ class FlutterDanmakuFlameMasterView(
         danmakuDisplayArea = MapUtils.getFloat(args, "danmakuDisplayArea", danmakuDisplayArea)
         danmakuFontSizeRatio = MapUtils.getFloat(args, "danmakuFontSizeRatio", danmakuFontSizeRatio)
         danmakuSpeed = MapUtils.getFloat(args, "danmakuSpeed", danmakuSpeed)
+
+        maxNumInScreen = MapUtils.getInteger(args, "maxNumInScreen", maxNumInScreen)
+        maxLinesLimit = MapUtils.getInteger(args, "maxNumInScreen", maxLinesLimit)
 
         duplicateMergingEnable = MapUtils.getBoolean(args, "duplicateMergingEnabled", duplicateMergingEnable)
         fixedTopDanmakuVisibility = MapUtils.getBoolean(args, "fixedTopDanmakuVisibility", fixedTopDanmakuVisibility)
@@ -115,6 +123,7 @@ class FlutterDanmakuFlameMasterView(
     override fun dispose() {
         Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "销毁view")
         try {
+            mDanmakuView.layoutParams.height = 15
             mDanmakuView.release()
         } catch (e: Exception) {
             Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "销毁view失败")
@@ -126,6 +135,12 @@ class FlutterDanmakuFlameMasterView(
      */
     private fun setSetting(context: Context?) {
         Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "弹幕设置")
+        val maxLInesPair: Map<Int, Int>? = if (maxLinesLimit == null) null else mapOf(
+            BaseDanmaku.TYPE_SCROLL_RL to maxLinesLimit!!,
+            BaseDanmaku.TYPE_SCROLL_LR to maxLinesLimit!!,
+            BaseDanmaku.TYPE_FIX_TOP to maxLinesLimit!!,
+            BaseDanmaku.TYPE_FIX_BOTTOM to maxLinesLimit!!
+        )
 
         // 设置是否禁止重叠
         val overlappingEnablePair : Map<Int, Boolean> = hashMapOf(BaseDanmaku.TYPE_SCROLL_RL to allowOverlap, BaseDanmaku.TYPE_FIX_TOP to allowOverlap)
@@ -144,9 +159,10 @@ class FlutterDanmakuFlameMasterView(
             //设置缓存绘制填充器，默认使用SimpleTextCacheStuffer只支持纯文字显示,
             // 如果需要图文混排请设置SpannedCacheStuffer 如果需要定制其他样式请扩展SimpleTextCacheStuffer|SpannedCacheStuffer
             .setCacheStuffer(SpannedCacheStuffer(), null)
-//            .setMaximumLines(maxLInesPair) // 设置最大显示行数
+            .setMaximumLines(maxLInesPair) // 设置最大显示行数
             .setMaximumLines(null) // 设置最大显示行数
             .preventOverlapping(overlappingEnablePair) // 设置防弹幕重叠
+            .setMaximumVisibleSizeInScreen(maxNumInScreen) // 同屏弹幕数量 -1 按绘制效率自动调整 0 无限制 n 同屏最大显示n个弹幕
 
         Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "mDanmakuView not null")
         //mParser = createParser(context!!.openFileInput("C:\\Users\\lcj\\Desktop\\danmu.json"))
@@ -576,6 +592,46 @@ class FlutterDanmakuFlameMasterView(
             val overlappingEnablePair : Map<Int, Boolean> = hashMapOf(BaseDanmaku.TYPE_SCROLL_RL to flag, BaseDanmaku.TYPE_FIX_TOP to flag)
             try {
                 mContext.preventOverlapping(overlappingEnablePair)
+            } catch (e: Exception) {
+                Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setColorsDanmakuVisibility error: $e")
+            }
+        }
+    }
+
+    /**
+     * 设置最大显示行数
+     * 设置null取消行数限制
+     * pairs – map  设置null取消行数限制 K = (BaseDanmaku.TYPE_SCROLL_RL|BaseDanmaku.TYPE_SCROLL_LR|BaseDanmaku.TYPE_FIX_TOP|BaseDanmaku.TYPE_FIX_BOTTOM) V = 最大行数
+     */
+    override fun setMaximumLines(lines: Int?) {
+        if (mDanmakuView.isPrepared) {
+            try {
+                if (lines == null) {
+                    mContext.setMaximumLines(null);
+                } else {
+                    val limitMap: Map<Int, Int> = mapOf(
+                        BaseDanmaku.TYPE_SCROLL_RL to lines,
+                        BaseDanmaku.TYPE_SCROLL_LR to lines,
+                        BaseDanmaku.TYPE_FIX_TOP to lines,
+                        BaseDanmaku.TYPE_FIX_BOTTOM to lines
+                    );
+                    mContext.setMaximumLines(limitMap)
+                }
+            } catch (e: Exception) {
+                Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setMaximumLines error: $e")
+            }
+        }
+    }
+
+    /**
+     * 设置同屏弹幕密度 -1自动 0无限制  n 同屏最大显示n个弹幕
+     *
+     * @param maxSize
+     */
+    override fun setMaximumVisibleSizeInScreen(maxSize: Int) {
+        if (mDanmakuView.isPrepared) {
+            try {
+                mContext.setMaximumVisibleSizeInScreen(maxSize)
             } catch (e: Exception) {
                 Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setColorsDanmakuVisibility error: $e")
             }
