@@ -55,10 +55,10 @@ class FlutterDanmakuView(
             }
             "sendDanmaku" -> { // 发送弹幕
                 try {
-                    Log.e(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "sendDanmaku读取到的参数，${call.arguments}")
+                    Log.d(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "sendDanmaku读取到的参数，${call.arguments}")
                     val isLive: Boolean = call.argument<Boolean>("isLive") as Boolean
                     val danmakuText: String? = call.argument<String>("danmakuText")
-                    Log.e(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "sendDanmaku读取到的内容，$danmakuText")
+                    Log.d(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "sendDanmaku读取到的内容，$danmakuText")
                     val timeStr: String? = call.argument<String>("time")
                     var time: Long? = null
                     if (!timeStr.isNullOrEmpty()) {
@@ -76,7 +76,7 @@ class FlutterDanmakuView(
                     val underlineColor: Int? = call.argument<Int>("underlineColor")
                     val borderColor: Int? = call.argument<Int>("borderColor")
                     if (!danmakuText.isNullOrEmpty()) {
-                        Log.e(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "sendDanmaku发送内容不为空，$danmakuText")
+                        Log.d(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "sendDanmaku发送内容不为空，$danmakuText")
                         FlutterDanmakuViewUtils.sendDanmaku(isLive, danmakuText, time, danmakuType,
                             padding, textSize, textColor, textShadowColor, underlineColor, borderColor)
                     }
@@ -184,6 +184,7 @@ class FlutterDanmakuView(
             "setDanmakuDisplayArea" -> { // 设置弹幕显示区域
                 try {
                     val area: Float? = call.argument<Double>("area")?.toFloat()
+                    Log.d(FlutterDanmakuConstant.FLUTTER_ANDROID_DANMAKU_VIEW_LOG_TAG, "FlutterDanmakuView -> setDanmakuDisplayArea获取到区域：area:$area")
                     if (area == null) {
                         result.success(mapOf("method" to "setDanmakuDisplayArea", "flag" to false, "msg" to "设置弹幕显示区域失败：无法获取设置弹幕显示区域值"))
                     } else {

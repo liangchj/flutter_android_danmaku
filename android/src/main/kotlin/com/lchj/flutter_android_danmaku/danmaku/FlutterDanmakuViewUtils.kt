@@ -153,7 +153,7 @@ object FlutterDanmakuViewUtils {
         }
     }
     /**
-     * 设置显示区域（区域下标）
+     * 设置显示区域
      */
     fun setDanmakuDisplayArea(area: Float) {
         try {
@@ -210,6 +210,7 @@ object FlutterDanmakuViewUtils {
      * 设置是否显示顶部固定弹幕
      */
     fun setFixedTopDanmakuVisibility(visible: Boolean) {
+        Log.d(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "FlutterDanmakuViewUtils -> setFixedTopDanmakuVisibility 进入设置是否显示顶部固定弹幕，visible：$visible")
         try {
             danmakuView?.setFixedTopDanmakuVisibility(visible)
         } catch (e: Exception) {
@@ -231,6 +232,7 @@ object FlutterDanmakuViewUtils {
      * 设置是否显示从左向右滚动弹幕
      */
     fun setL2RDanmakuVisibility(visible: Boolean) {
+        Log.d(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "FlutterDanmakuViewUtils -> setL2RDanmakuVisibility 进入设置是否显示从左向右滚动弹幕，visible：$visible")
         try {
             danmakuView?.setL2RDanmakuVisibility(visible)
         } catch (e: Exception) {

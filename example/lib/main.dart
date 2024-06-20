@@ -59,15 +59,17 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: [
-            TextButton(onPressed: () {
-              Get.to(const DanmakuFlameMasterPage());
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) {
-              //     return const DanmakuFlameMasterPage();
-              //   }),
-              // );
-            }, child: const Text("测试插件")),
+            TextButton(
+                onPressed: () {
+                  Get.to(const DanmakuFlameMasterPage());
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) {
+                  //     return const DanmakuFlameMasterPage();
+                  //   }),
+                  // );
+                },
+                child: const Text("测试插件")),
           ],
         ),
       ),

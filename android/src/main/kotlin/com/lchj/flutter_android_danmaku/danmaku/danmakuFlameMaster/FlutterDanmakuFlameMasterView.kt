@@ -3,6 +3,8 @@ package com.lchj.flutter_android_danmaku.danmaku.danmakuFlameMaster
 import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import com.lchj.flutter_android_danmaku.FlutterDanmakuConstant
 import io.flutter.Log
 import master.flame.danmaku.controller.DrawHandler
@@ -12,9 +14,11 @@ import master.flame.danmaku.danmaku.loader.IllegalDataException
 import master.flame.danmaku.danmaku.loader.android.DanmakuLoaderFactory
 import master.flame.danmaku.danmaku.model.BaseDanmaku
 import master.flame.danmaku.danmaku.model.DanmakuTimer
+import master.flame.danmaku.danmaku.model.Duration
 import master.flame.danmaku.danmaku.model.IDanmakus
 import master.flame.danmaku.danmaku.model.IDisplayer
 import master.flame.danmaku.danmaku.model.android.DanmakuContext
+import master.flame.danmaku.danmaku.model.android.DanmakuFactory
 import master.flame.danmaku.danmaku.model.android.Danmakus
 import master.flame.danmaku.danmaku.model.android.SpannedCacheStuffer
 import master.flame.danmaku.danmaku.parser.BaseDanmakuParser
@@ -86,6 +90,8 @@ class FlutterDanmakuFlameMasterView(
     // 最大显示行数
     private var maxLinesLimit: Int? = null
 
+    private var mViewWidth: Float = 0f
+    private var mViewHeight: Float = 0f
 
     init {
         isStart = MapUtils.getBoolean(args, "isStart", isStart)
@@ -192,6 +198,12 @@ class FlutterDanmakuFlameMasterView(
                 }
 
                 override fun prepared() {
+                    Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "准备完成， width：${mDanmakuView.layoutParams.width}, height: ${mDanmakuView.layoutParams.height}")
+                    mViewWidth = mDanmakuView.layoutParams.width.toFloat()
+                    mViewHeight = mDanmakuView.layoutParams.height.toFloat()
+                    if (danmakuDisplayArea != 1.0f) {
+                        mDanmakuView.layoutParams = FrameLayout.LayoutParams(mViewWidth.toInt(), (mViewHeight * danmakuDisplayArea).toInt())
+                    }
                     if (isStart) {
                         try {
                             mDanmakuView.start()
@@ -351,7 +363,10 @@ class FlutterDanmakuFlameMasterView(
         danmaku.textShadowColor = textShadowColor ?: Color.WHITE
         danmaku.underlineColor = underlineColor ?: Color.GREEN;
         danmaku.borderColor = borderColor ?: Color.GREEN
-        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "sendDanmaku 执行发送弹幕: $danmaku")
+        if (danmaku.duration == null) {
+            danmaku.duration = Duration((DanmakuFactory.COMMON_DANMAKU_DURATION * mContext.scrollSpeedFactor).toLong())
+        }
+        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "sendDanmaku 执行发送弹幕: $danmaku, ${danmaku.duration.value}, ${danmaku.time}")
         mDanmakuView.addDanmaku(danmaku)
     }
 
@@ -413,17 +428,25 @@ class FlutterDanmakuFlameMasterView(
     }
 
     /**
-     * 设置显示区域（
+     * 设置显示区域
      */
     override fun setDanmakuDisplayArea(area: Float) {
-        TODO("Not yet implemented")
+        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "进入设置显示区域 area: $area，mDanmakuView.layoutParams.width：${mDanmakuView.layoutParams.width}，mDanmakuView.layoutParams.height：${mDanmakuView.layoutParams.height}")
+        if (mDanmakuView.isPrepared) {
+            try {
+                mDanmakuView.layoutParams = FrameLayout.LayoutParams(mViewWidth.toInt(), (mViewHeight * area).toInt())
+                mDanmakuView.invalidate()
+            } catch (e: Exception) {
+                Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "设置显示区域 error: $e")
+            }
+        }
     }
 
     /**
      * 设置弹幕文字大小（百分比）
      */
     override fun setDanmakuFontSize(fontSizeRatio: Float) {
-        Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setDanmakuScaleTextSize fontSize: ${danmakuFontSizeRatio}, mDanmakuView.isPrepared:${mDanmakuView.isPrepared}")
+        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setDanmakuScaleTextSize fontSize: ${danmakuFontSizeRatio}, mDanmakuView.isPrepared:${mDanmakuView.isPrepared}")
         if (mDanmakuView.isPrepared) {
             try {
                 Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setDanmakuScaleTextSize fontSizeRatio: $fontSizeRatio")
@@ -464,8 +487,10 @@ class FlutterDanmakuFlameMasterView(
      * 设置是否启用合并重复弹幕
      */
     override fun setDuplicateMergingEnabled(merge: Boolean) {
+        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setDuplicateMergingEnabled，进入设置是否启用合并重复弹幕，merge：$merge")
         if (mDanmakuView.isPrepared) {
             try {
+                Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setDuplicateMergingEnabled，执行设置是否启用合并重复弹幕，merge：$merge")
                 mContext.isDuplicateMergingEnabled = merge
                 mDanmakuView.invalidate()
             } catch (e: Exception) {
@@ -478,8 +503,10 @@ class FlutterDanmakuFlameMasterView(
      * 设置是否显示顶部固定弹幕
      */
     override fun setFixedTopDanmakuVisibility(visible: Boolean) {
+        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setFixedTopDanmakuVisibility，进入设置是否显示顶部固定弹幕，visible：$visible")
         if (mDanmakuView.isPrepared) {
             try {
+                Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setFixedTopDanmakuVisibility，执行设置是否显示顶部固定弹幕，visible：$visible")
                 mContext.ftDanmakuVisibility = visible
                 mDanmakuView.invalidate()
             } catch (e: Exception) {
@@ -523,12 +550,13 @@ class FlutterDanmakuFlameMasterView(
      * 设置是否显示从左向右滚动弹幕
      */
     override fun setL2RDanmakuVisibility(visible: Boolean) {
-        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setL2RDanmakuVisibility visible: $visible, isPrepared: ${mDanmakuView.isPrepared}")
+        Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setL2RDanmakuVisibility 进入设置是否显示从左向右滚动弹幕，visible: $visible, isPrepared: ${mDanmakuView.isPrepared}，mContext: $mContext")
         if (mDanmakuView.isPrepared) {
-            Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setL2RDanmakuVisibility entry")
             try {
+                Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "ssetL2RDanmakuVisibility，执行设置是否显示从左向右滚动弹幕，visible: $visible, mContext.L2RDanmakuVisibility: ${mContext.L2RDanmakuVisibility}")
                 mContext.L2RDanmakuVisibility = visible
                 mDanmakuView.invalidate()
+                Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "ssetL2RDanmakuVisibility，执行设置是否显示从左向右滚动弹幕之后，mContext.L2RDanmakuVisibility: ${mContext.L2RDanmakuVisibility}")
             } catch (e: Exception) {
                 Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "setL2RDanmakuVisibility error: $e")
             }

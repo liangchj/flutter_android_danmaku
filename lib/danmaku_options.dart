@@ -8,21 +8,21 @@ class DanmakuOptions {
   final bool? isShowCache;
 
   // 设置是否允许重叠
-  final bool? allowOverlap;
+  bool? allowOverlap;
   // 是否显示顶部弹幕
-  final bool? fixedTopDanmakuVisibility;
+  bool? fixedTopDanmakuVisibility;
   // 是否显示底部弹幕
-  final bool? fixedBottomDanmakuVisibility;
+  bool? fixedBottomDanmakuVisibility;
   // 是否显示从左到右滚动弹幕
-  final bool? l2RDanmakuVisibility;
+  bool? l2RDanmakuVisibility;
   // 是否显示从右到左滚动弹幕
-  final bool? r2LDanmakuVisibility;
+  bool? r2LDanmakuVisibility;
   // 是否显示特殊弹幕
-  final bool? specialDanmakuVisibility;
+  bool? specialDanmakuVisibility;
   // 是否启用合并重复弹幕
-  final bool? duplicateMergingEnable;
+  bool? duplicateMergingEnable;
   // 是否显示彩色弹幕
-  final bool? colorsDanmakuVisibility;
+  bool? colorsDanmakuVisibility;
 
   // 设置描边样式
   final double? danmakuStyleStroke;
@@ -57,29 +57,29 @@ class DanmakuOptions {
     this.danmakuDisplayArea,
     this.danmakuFontSizeRatio,
     this.danmakuSpeed,
-    this.maxNumInScreen, this.maxLinesLimit,
+    this.maxNumInScreen,
+    this.maxLinesLimit,
   });
 
   Map<String, dynamic> toJson() => {
-    "danmakuPath": danmakuPath,
-    "isStart": isStart,
-    "isShowFPS": isShowFPS,
-    "isShowCache": isShowCache,
-    "allowOverlap": allowOverlap,
-    "fixedTopDanmakuVisibility": fixedTopDanmakuVisibility,
-    "fixedBottomDanmakuVisibility": fixedBottomDanmakuVisibility,
-    "l2RDanmakuVisibility": l2RDanmakuVisibility,
-    "r2LDanmakuVisibility": r2LDanmakuVisibility,
-    "specialDanmakuVisibility": specialDanmakuVisibility,
-    "duplicateMergingEnable": duplicateMergingEnable,
-    "colorsDanmakuVisibility": colorsDanmakuVisibility,
-    "danmakuStyleStroke": danmakuStyleStroke,
-    "danmakuAlphaRatio": danmakuAlphaRatio,
-    "danmakuDisplayArea": danmakuDisplayArea,
-    "danmakuFontSizeRatio": danmakuFontSizeRatio,
-    "danmakuSpeed": danmakuSpeed,
-    "maxNumInScreen": maxNumInScreen,
-    "maxLinesLimit": maxLinesLimit,
-
-  };
+        "danmakuPath": danmakuPath,
+        "isStart": isStart,
+        "isShowFPS": isShowFPS,
+        "isShowCache": isShowCache,
+        "allowOverlap": allowOverlap,
+        "fixedTopDanmakuVisibility": fixedTopDanmakuVisibility,
+        "fixedBottomDanmakuVisibility": fixedBottomDanmakuVisibility,
+        "l2RDanmakuVisibility": l2RDanmakuVisibility,
+        "r2LDanmakuVisibility": r2LDanmakuVisibility,
+        "specialDanmakuVisibility": specialDanmakuVisibility,
+        "duplicateMergingEnable": duplicateMergingEnable,
+        "colorsDanmakuVisibility": colorsDanmakuVisibility,
+        "danmakuStyleStroke": danmakuStyleStroke,
+        "danmakuAlphaRatio": danmakuAlphaRatio,
+        "danmakuDisplayArea": danmakuDisplayArea,
+        "danmakuFontSizeRatio": danmakuFontSizeRatio,
+        "danmakuSpeed": danmakuSpeed,
+        "maxNumInScreen": maxNumInScreen,
+        "maxLinesLimit": maxLinesLimit,
+      };
 }
