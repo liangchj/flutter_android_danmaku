@@ -93,6 +93,9 @@ class FlutterDanmakuFlameMasterView(
     private var mViewWidth: Float = 0f
     private var mViewHeight: Float = 0f
 
+    // 启动位置
+    private var startPosition: Long? = null
+
     init {
         isStart = MapUtils.getBoolean(args, "isStart", isStart)
         isShowFPS = MapUtils.getBoolean(args, "isShowFPS", isShowFPS)
@@ -115,6 +118,8 @@ class FlutterDanmakuFlameMasterView(
         specialDanmakuVisibility = MapUtils.getBoolean(args, "specialDanmakuVisibility", specialDanmakuVisibility)
         colorsDanmakuVisibility = MapUtils.getBoolean(args, "colorsDanmakuVisibility", colorsDanmakuVisibility)
 
+        startPosition = MapUtils.getLong(args, "startPosition", startPosition)
+
         mDanmakuView = DanmakuView(context)
         setSetting(context)
     }
@@ -129,7 +134,6 @@ class FlutterDanmakuFlameMasterView(
     override fun dispose() {
         Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "销毁view")
         try {
-            mDanmakuView.layoutParams.height = 15
             mDanmakuView.release()
         } catch (e: Exception) {
             Log.e(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "销毁view失败")
@@ -206,7 +210,7 @@ class FlutterDanmakuFlameMasterView(
                     }
                     if (isStart) {
                         try {
-                            mDanmakuView.start()
+                            mDanmakuView.start(startPosition ?: 0L)
                         } catch (e1: Exception) {
                             Log.d(FlutterDanmakuConstant.DANMAKU_FLAME_MASTER_LOG_TAG, "mDanmakuView.setCallback中启动报错：$e1")
                         }

@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_android_danmaku/flutter_android_danmaku.dart';
+import 'package:flutter_android_danmaku_example/ak_danmaku_page.dart';
 import 'package:flutter_android_danmaku_example/danmaku_flame_master_page.dart';
 import 'package:flutter_android_danmaku_example/permission_utils.dart';
 import 'package:get/get.dart';
@@ -57,20 +58,28 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Column(
-          children: [
-            TextButton(
-                onPressed: () {
-                  Get.to(const DanmakuFlameMasterPage());
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) {
-                  //     return const DanmakuFlameMasterPage();
-                  //   }),
-                  // );
-                },
-                child: const Text("测试插件")),
-          ],
+        body: Center(
+          child: Column(
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Get.to(const DanmakuFlameMasterPage());
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) {
+                    //     return const DanmakuFlameMasterPage();
+                    //   }),
+                    // );
+                  },
+                  child: const Text("烈焰弹幕使")),
+
+              TextButton(
+                  onPressed: () {
+                    Get.to(const AKDanmakuPage());
+                  },
+                  child: const Text("akDanmaku")),
+            ],
+          ),
         ),
       ),
     );

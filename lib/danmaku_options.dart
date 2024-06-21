@@ -1,4 +1,8 @@
+import 'flutter_android_danmaku_view.dart';
+
 class DanmakuOptions {
+  // 使用哪一个弹幕库
+  final AndroidDanmakuType androidDanmakuType;
   final String? danmakuPath;
   // 解析完是否直接启动
   final bool? isStart;
@@ -38,8 +42,11 @@ class DanmakuOptions {
   final int? maxNumInScreen;
   // 最大显示行数
   final int? maxLinesLimit;
+  // 加载时直接启动位置（请传入long类型的字符串）
+  final String? startPosition;
 
   DanmakuOptions({
+    this.androidDanmakuType = AndroidDanmakuType.danmakuFlameMaster,
     this.danmakuPath,
     this.isStart,
     this.isShowFPS,
@@ -59,9 +66,11 @@ class DanmakuOptions {
     this.danmakuSpeed,
     this.maxNumInScreen,
     this.maxLinesLimit,
+    this.startPosition,
   });
 
   Map<String, dynamic> toJson() => {
+        "androidDanmakuType": androidDanmakuType.name,
         "danmakuPath": danmakuPath,
         "isStart": isStart,
         "isShowFPS": isShowFPS,
@@ -81,5 +90,6 @@ class DanmakuOptions {
         "danmakuSpeed": danmakuSpeed,
         "maxNumInScreen": maxNumInScreen,
         "maxLinesLimit": maxLinesLimit,
+        "startPosition": startPosition,
       };
 }

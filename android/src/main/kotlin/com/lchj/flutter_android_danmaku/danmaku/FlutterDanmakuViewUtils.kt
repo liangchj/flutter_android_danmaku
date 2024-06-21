@@ -4,10 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import com.lchj.flutter_android_danmaku.FlutterDanmakuConstant
+import com.lchj.flutter_android_danmaku.danmaku.akDanmaku.FlutterAKDanmakuView
 import com.lchj.flutter_android_danmaku.danmaku.danmakuFlameMaster.FlutterDanmakuFlameMasterView
 import io.flutter.Log
 import org.apache.commons.collections4.MapUtils
 
+enum class AndroidDanmakuType(name: String) {
+    DANMAKU_FLAME_MASTER("danmakuFlameMaster"),
+    AK_DANMAKU("akDanmaku")
+}
 @SuppressLint("StaticFieldLeak")
 object FlutterDanmakuViewUtils {
 //    private var biliDanmakuView : BiliDanmakuView? = null
@@ -26,6 +31,8 @@ object FlutterDanmakuViewUtils {
         val rebuild: Boolean = MapUtils.getBoolean(args, "rebuild", false)
         val newDanmakuPath = MapUtils.getString(args, "danmakuPath", "")
 
+        val androidDanmakuType: String = MapUtils.getString(args, "androidDanmakuType", AndroidDanmakuType.DANMAKU_FLAME_MASTER.name);
+
         // 弹幕路径为空时返回空的view
         if (newDanmakuPath.isEmpty()) {
             dispose()
@@ -38,7 +45,11 @@ object FlutterDanmakuViewUtils {
             danmakuPath = newDanmakuPath
             Log.d(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "newDanmakuPath是否赋值给danmakuPath成功: $danmakuPath")
             try {
-                danmakuView = FlutterDanmakuFlameMasterView(context, newDanmakuPath, args)
+                if (androidDanmakuType == AndroidDanmakuType.DANMAKU_FLAME_MASTER.name) {
+                    danmakuView = FlutterDanmakuFlameMasterView(context, newDanmakuPath, args)
+                } else if (androidDanmakuType == AndroidDanmakuType.AK_DANMAKU.name) {
+                    danmakuView = FlutterAKDanmakuView(context, newDanmakuPath, args)
+                }
             } catch (e: Exception) {
                 Log.d(FlutterDanmakuConstant.DANMAKU_UTILS_LOG_TAG, "danmakuView创建失败: $e")
             }

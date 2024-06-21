@@ -273,3 +273,12 @@ class ResultInfo {
 
   Map<String, dynamic> toJson() => {"method": method, "flag": flag, "msg": msg};
 }
+
+enum AndroidDanmakuType {
+  danmakuFlameMaster("danmakuFlameMaster"),
+  akDanmaku("akDanmaku");
+
+  final String name;
+
+  const AndroidDanmakuType(this.name);
+}
